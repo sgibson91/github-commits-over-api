@@ -8,7 +8,11 @@ import requests
 
 
 def parse_args(args):
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="""
+A script to make a commit to the default branch of a repository over the GitHub API
+"""
+    )
 
     parser.add_argument(
         "repository", type=str, help="The repository to commit to in the form USER/REPO"
@@ -23,23 +27,23 @@ def parse_args(args):
 
 
 def main():
+    # Parse arguments from the command line
+    args = parse_args(sys.argv[1:])
+
     # Verify GITHUB_TOKEN has been set in the environment
     token = os.environ["GITHUB_TOKEN"] if "GITHUB_TOKEN" in os.environ else None
     if token is None:
         raise ValueError("GITHUB_TOKEN must be set in the environment!")
+
+    # Set API URL
+    API_ROOT = "https://api.github.com"
+    repo_api = "/".join([API_ROOT, "repos", args.repository])
 
     # Create a requests header
     HEADER = {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": f"token {token}",
     }
-
-    # Parse arguments from the command line
-    args = parse_args(sys.argv[1:])
-
-    # Set API URL
-    API_ROOT = "https://api.github.com"
-    repo_api = "/".join([API_ROOT, "repos", args.repository])
 
     # === Begin making the changes and commit === #
     # Step 1. Get a reference to HEAD

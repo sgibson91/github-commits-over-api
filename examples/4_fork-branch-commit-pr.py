@@ -10,10 +10,18 @@ import requests
 
 
 def parse_args(args):
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(
+        description="""
+A script that forks a repository on GitHub, creates a new branch in the fork,
+makes a commit to that branch, and then opens a Pull Request back to the original
+repository. All over the GitHub API.
+"""
+    )
 
     parser.add_argument(
-        "repository", type=str, help="The repository to commit to in the form USER/REPO"
+        "repository",
+        type=str,
+        help="The repository to commit to in the form USER/REPO",
     )
     parser.add_argument(
         "filepath",
@@ -21,7 +29,9 @@ def parse_args(args):
         help="The path to the file to be edited, relative to the repository root",
     )
     parser.add_argument(
-        "branch_name", type=str, help="The name of the new branch to create"
+        "branch_name",
+        type=str,
+        help="The name of the new branch to create",
     )
     parser.add_argument(
         "-d",
@@ -30,35 +40,35 @@ def parse_args(args):
         default="main",
         help="The name of your default branch. Defaults to 'main'.",
     )
-    parse_args(
+    parser.add_argument(
         "-o",
         "--org-name",
         type=str,
         default=None,
-        help="The name of the organisation to create a fork for, if not a user",
+        help="The name of the organisation to create a fork for, if not a user. Defaults to None.",
     )
 
     return parser.parse_args()
 
 
 def main():
+    # Parse arguments from the command line
+    args = parse_args(sys.argv[1:])
+
     # Verify GITHUB_TOKEN has been set in the environment
     token = os.environ["GITHUB_TOKEN"] if "GITHUB_TOKEN" in os.environ else None
     if token is None:
         raise ValueError("GITHUB_TOKEN must be set in the environment!")
+
+    # Set API URL
+    API_ROOT = "https://api.github.com"
+    repo_api = "/".join([API_ROOT, "repos", args.repository])
 
     # Create a requests header
     HEADER = {
         "Accept": "application/vnd.github.v3+json",
         "Authorization": f"token {token}",
     }
-
-    # Parse arguments from the command line
-    args = parse_args(sys.argv[1:])
-
-    # Set API URL
-    API_ROOT = "https://api.github.com"
-    repo_api = "/".join([API_ROOT, "repos", args.repository])
 
     # === Begin making the branch, commit and Pull Request === #
     # Step 1. Fork the repo
