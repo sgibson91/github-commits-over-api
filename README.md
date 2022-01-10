@@ -1,5 +1,7 @@
 # Committing files over the GitHub API with Python
 
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/sgibson91/github-commits-over-api/main.svg)](https://results.pre-commit.ci/latest/github/sgibson91/github-commits-over-api/main)
+
 This is a demo repo where I was testing making commits over the GitHub API using Python and the `requests` library.
 I've found this method useful when automating tasks that involve interacting with the GitHub API.
 It removes the need to have `git` installed in the environment your process is running in, and removes the need to clone the repository locally for the sake of editing one or two files.
