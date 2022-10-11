@@ -132,7 +132,7 @@ def main():
     subprocess.run(["nano", tmpf.name])
 
     # 5d. Read in the edited file
-    with open(tmpf.name, "r") as f:
+    with open(tmpf.name) as f:
         file_contents = f.read()
 
     # 5e. Clean up the temporary file
